@@ -71,15 +71,21 @@ jobs:
           remove-haskell: 'true'
           remove-codeql: 'true'
           remove-docker-images: 'true'
+      - name: 安装 UPX
+        if: ${{ matrix.TARGET != 'x86_64-unknown-freebsd' }}
+        uses: crazy-max/ghaction-upx@v3
+        with:
+          version: latest
+          install-only: true
       - name: 构建
         run: |
           set +e
           sudo timedatectl set-timezone Asia/Shanghai
-          URL="https://downloads.openwrt.org/releases/23.05.4/targets/ramips/mt7621/openwrt-sdk-23.05.4-ramips-mt7621_gcc-12.3.0_musl.Linux-x86_64.tar.xz"
-          curl -Lk -o /tmp/openwrt-toolchain.tar.xz "$URL" || wget --no-check-certificate -O /tmp/openwrt-toolchain.tar.xz "$URL"
-          tar -xJf /tmp/openwrt-toolchain.tar.xz 
-          mv openwrt-sdk-23.05.4* openwrt-sdk-23.05.4
-          ls 
+          #URL="https://downloads.openwrt.org/releases/23.05.4/targets/ramips/mt7621/openwrt-sdk-23.05.4-ramips-mt7621_gcc-12.3.0_musl.Linux-x86_64.tar.xz"
+          #curl -Lk -o /tmp/openwrt-toolchain.tar.xz "$URL" || wget --no-check-certificate -O /tmp/openwrt-toolchain.tar.xz "$URL"
+          #tar -xJf /tmp/openwrt-toolchain.tar.xz 
+          #mv openwrt-sdk-23.05.4* openwrt-sdk-23.05.4
+          #ls 
           
       - name: 推送准备
         if: ${{ github.event.inputs.Push == 'true' }}
