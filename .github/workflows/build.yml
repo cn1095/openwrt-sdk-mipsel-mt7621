@@ -106,3 +106,9 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           force_with_lease: true
+
+      - name: 上传
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: bin/packages/*
