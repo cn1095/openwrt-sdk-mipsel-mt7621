@@ -6,7 +6,12 @@ on:
       Push:
         description: '是否推送到仓库'
         required: true
-        default: false
+        default: "false"
+        type: boolean
+      Clean:
+        description: '是否推送到仓库'
+        required: true
+        default: "false"
         type: boolean
 
 env:
@@ -21,32 +26,64 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: 检出代码
         uses: actions/checkout@v4
-      - name: delete-workflow
+      - name: 删除记录
         uses: Mattraks/delete-workflow-runs@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           retain_days: 0
-          keep_minimum_runs: 0  
-      - name: build
+          keep_minimum_runs: 0 
+      - name: 优化磁盘空间
+        if: ${{ github.event.inputs.Clean == 'true' }}
+        uses: "hugoalh/disk-space-optimizer-ghaction@v0.8.1"
+        with:
+          operate_sudo: "True"
+          general_include: ".+"
+          general_exclude: |-
+            ^GCC$
+            ^G\+\+$
+            Clang
+            LLVM
+          docker_include: ".+"
+          docker_prune: "True"
+          docker_clean: "True"
+          apt_prune: "True"
+          apt_clean: "True"
+          homebrew_prune: "True"
+          homebrew_clean: "True"
+          npm_prune: "True"
+          npm_clean: "True"
+          os_swap: "True"
+      - name: 释放磁盘空间
+        if: ${{ github.event.inputs.Clean == 'true' }}
+        uses: easimon/maximize-build-space@master
+        with: 
+          root-reserve-mb: 10240
+          swap-size-mb: 1
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-docker-images: 'true'
+      - name: 构建
         run: |
           set +e
           sudo timedatectl set-timezone Asia/Shanghai
           URL="https://archive.openwrt.org/releases/23.05.4/targets/ramips/mt7621/openwrt-toolchain-23.05.4-ramips-mt7621_gcc-12.3.0_musl.Linux-x86_64.tar.xz"
           curl -Lk -o /tmp/openwrt-toolchain.tar.xz "$URL" || wget --no-check-certificate -O /tmp/openwrt-toolchain.tar.xz "$URL"
-          tar -xJf /tmp/openwrt-toolchain.tar.xz -C /opt
-          ls /opt
+          tar -xJf /tmp/openwrt-toolchain.tar.xz --strip-components=1
+          ls 
           
-      - name: Commit files
-        if: ${{ github.event.inputs.Push }}
+      - name: 推送准备
+        if: ${{ github.event.inputs.Push == 'true' }}
         run: |
           git config --local user.email "github-actions@github.com"
           git config --local user.name "github-actions"
           git add .
           git commit -m "更新时间 ： $(date '+%Y-%m-%d %H:%M:%S')" -a
-      - name: Push changes
-        if: ${{ github.event.inputs.Push }}
+      - name: 推送仓库
+        if: ${{ github.event.inputs.Push == 'true' }}
         uses: ad-m/github-push-action@master
         with:
           force_with_lease: true
