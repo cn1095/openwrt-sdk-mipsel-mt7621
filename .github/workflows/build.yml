@@ -9,7 +9,7 @@ on:
         default: "false"
         type: boolean
       Clean:
-        description: '是否推送到仓库'
+        description: '是否释放空间'
         required: true
         default: "false"
         type: boolean
