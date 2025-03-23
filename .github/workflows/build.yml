@@ -92,8 +92,7 @@ jobs:
           #ls 
 
           cd openwrt-sdk-23.05.4
-          ./scripts/feeds update -a
-          ./scripts/feeds install -a
+          ${{ github.event.inputs.Build }}
           
       - name: 推送准备
         if: ${{ github.event.inputs.Push == 'true' }}
