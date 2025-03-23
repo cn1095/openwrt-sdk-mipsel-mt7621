@@ -70,7 +70,7 @@ jobs:
         run: |
           set +e
           sudo timedatectl set-timezone Asia/Shanghai
-          URL="https://archive.openwrt.org/releases/23.05.4/targets/ramips/mt7621/openwrt-toolchain-23.05.4-ramips-mt7621_gcc-12.3.0_musl.Linux-x86_64.tar.xz"
+          URL="https://downloads.openwrt.org/releases/23.05.4/targets/ramips/mt7621/openwrt-sdk-23.05.4-ramips-mt7621_gcc-12.3.0_musl.Linux-x86_64.tar.xz"
           curl -Lk -o /tmp/openwrt-toolchain.tar.xz "$URL" || wget --no-check-certificate -O /tmp/openwrt-toolchain.tar.xz "$URL"
           tar -xJf /tmp/openwrt-toolchain.tar.xz --strip-components=1
           ls 
