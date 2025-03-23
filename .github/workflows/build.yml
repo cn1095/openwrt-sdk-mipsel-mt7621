@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       Build:
-        description: '编译命令 make package/feeds/packages/插件/compile V=s -j1'
+        description: '编译命令 make package/插件/compile V=s -j1'
         required: false
         default: ''
       Push:
