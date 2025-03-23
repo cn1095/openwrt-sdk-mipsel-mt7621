@@ -8,11 +8,16 @@ on:
         required: true
         default: "false"
         type: boolean
+      info:
+        description: '推送说明'
+        required: false
+        default: ''
       Clean:
         description: '是否释放空间'
         required: true
         default: "false"
         type: boolean
+        
 
 env:
   TZ: Asia/Shanghai
@@ -82,7 +87,7 @@ jobs:
           git config --local user.email "github-actions@github.com"
           git config --local user.name "github-actions"
           git add .
-          git commit -m "更新时间 ： $(date '+%Y-%m-%d %H:%M:%S')" -a
+          git commit -m "${{ github.event.inputs.info }}" -m "更新时间：$(date '+%Y-%m-%d %H:%M:%S')" -a
       - name: 推送仓库
         if: ${{ github.event.inputs.Push == 'true' }}
         uses: ad-m/github-push-action@master
