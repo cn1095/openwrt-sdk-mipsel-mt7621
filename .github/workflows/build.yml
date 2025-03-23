@@ -86,6 +86,10 @@ jobs:
           #tar -xJf /tmp/openwrt-toolchain.tar.xz 
           #mv openwrt-sdk-23.05.4* openwrt-sdk-23.05.4
           #ls 
+
+          cd openwrt-sdk-23.05.4
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
           
       - name: 推送准备
         if: ${{ github.event.inputs.Push == 'true' }}
