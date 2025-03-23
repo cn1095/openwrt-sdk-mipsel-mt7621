@@ -1,0 +1,52 @@
+name: mipsel
+
+on:
+  workflow_dispatch:
+    inputs:
+      Push:
+        description: '是否推送到仓库'
+        required: true
+        default: false
+        type: boolean
+
+env:
+  TZ: Asia/Shanghai
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: delete-workflow
+        uses: Mattraks/delete-workflow-runs@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          retain_days: 0
+          keep_minimum_runs: 0  
+      - name: build
+        run: |
+          set +e
+          sudo timedatectl set-timezone Asia/Shanghai
+          URL="https://archive.openwrt.org/releases/23.05.4/targets/ramips/mt7621/openwrt-toolchain-23.05.4-ramips-mt7621_gcc-12.3.0_musl.Linux-x86_64.tar.xz"
+          curl -Lk -o /tmp/openwrt-toolchain.tar.xz "$URL" || wget --no-check-certificate -O /tmp/openwrt-toolchain.tar.xz "$URL"
+          tar -xJf /tmp/openwrt-toolchain.tar.xz -C /opt
+          ls
+          
+      - name: Commit files
+        if: ${{ github.event.inputs.Push }}
+        run: |
+          git config --local user.email "github-actions@github.com"
+          git config --local user.name "github-actions"
+          git add .
+          git commit -m "更新时间 ： $(date '+%Y-%m-%d %H:%M:%S')" -a
+      - name: Push changes
+        if: ${{ github.event.inputs.Push }}
+        uses: ad-m/github-push-action@master
+        with:
+          force_with_lease: true
