@@ -36,7 +36,7 @@ jobs:
           URL="https://archive.openwrt.org/releases/23.05.4/targets/ramips/mt7621/openwrt-toolchain-23.05.4-ramips-mt7621_gcc-12.3.0_musl.Linux-x86_64.tar.xz"
           curl -Lk -o /tmp/openwrt-toolchain.tar.xz "$URL" || wget --no-check-certificate -O /tmp/openwrt-toolchain.tar.xz "$URL"
           tar -xJf /tmp/openwrt-toolchain.tar.xz -C /opt
-          ls
+          ls /opt
           
       - name: Commit files
         if: ${{ github.event.inputs.Push }}
