@@ -72,7 +72,8 @@ jobs:
           sudo timedatectl set-timezone Asia/Shanghai
           URL="https://downloads.openwrt.org/releases/23.05.4/targets/ramips/mt7621/openwrt-sdk-23.05.4-ramips-mt7621_gcc-12.3.0_musl.Linux-x86_64.tar.xz"
           curl -Lk -o /tmp/openwrt-toolchain.tar.xz "$URL" || wget --no-check-certificate -O /tmp/openwrt-toolchain.tar.xz "$URL"
-          tar -xJf /tmp/openwrt-toolchain.tar.xz --strip-components=1
+          tar -xJf /tmp/openwrt-toolchain.tar.xz 
+          mv openwrt-sdk-23.05.4* openwrt-sdk-23.05.4
           ls 
           
       - name: 推送准备
